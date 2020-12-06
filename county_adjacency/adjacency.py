@@ -9,7 +9,7 @@ from county_adjacency.errors import CountyNotFoundError, NoSimilarCountiesError
 
 logger = getLogger(__name__)
 
-# The threshold used to filter similar county, district or like namnes based on their Levenshtein ratio.
+# The threshold used to filter similar county, district or like names based on their Levenshtein ratio.
 LEVENSHTEIN_THRESHOLD = 0.7
 
 # Simple error correction measures.
