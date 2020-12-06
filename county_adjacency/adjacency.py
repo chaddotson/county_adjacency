@@ -22,75 +22,56 @@ __error_correction_county_formats = [
 
 
 def get_neighboring_counties(
-    county: str,
-    state: str = None,
-    as_tuple: bool = False,
+    county_or_like: str,
     attempt_error_correction: bool = True,
     use_best_match: bool = False,
 ):
     """
     Get the adjacent counties given a specified county.
 
+    :param county_or_like:
     :param use_best_match:
     :param attempt_error_correction:
-    :param as_tuple:
-    :param state:
-    :param county:
-    :param county_id: The
     :return:
     """
-    county_id = make_county_id(county, state)
-
-    if county_id not in united_states_adjacency_data:
+    if county_or_like not in united_states_adjacency_data:
         if not attempt_error_correction:
-            similar = find_similar_counties(county_id)
-            raise CountyNotFoundError(county_id, similar)
+            similar = find_similar_counties(county_or_like)
+            raise CountyNotFoundError(county_or_like, similar)
 
         try:
-            county_id = correct_county_name_errors(county, state, county_id, use_best_match)
+            county_or_like = correct_county_name_errors(county_or_like, use_best_match)
         except NoSimilarCountiesError as e:
-            raise CountyNotFoundError(county_id) from e
+            raise CountyNotFoundError(county_or_like) from e
 
-    if as_tuple or state is None:
-        return tuple([tuple(c.split(", ")) for c in united_states_adjacency_data[county_id]["adjacent"]])
-    else:
-        return tuple(united_states_adjacency_data[county_id]["adjacent"])
+    return tuple(united_states_adjacency_data[county_or_like]["adjacent"])
 
 
-def make_county_id(county: str, state: str) -> str:
-    """
-    Create a county id that matches the county format in the supported counties dictionary.
-
-    :param county: The county, district or like name
-    :param state: The state of the county, district or like.
-    :return: The combined county id that matches the format of the supported counties dictionary
-    """
-    if state is None:
-        county_id = county
-    else:
-        county_id = f"{county}, {state}"
-    return county_id
-
-
-def correct_county_name_errors(county: str, state: str, county_id: str, use_best_match: bool) -> str:
+def correct_county_name_errors(county_id: str, use_best_match: bool) -> str:
     """
     Attempt to correct county, district or like name errors.
 
-    :param county: The name of the county
-    :param state: The state of the county
     :param county_id: The created "county id"
     :param use_best_match: Accept fuzzy matches automatically.
     :return: The "county id" after correction has taken place.
     :raises NoSimilarCountiesError: In the event no similar counties are found.
     """
-    corrected_county_id = correct_missing_county_or_like(county, state)
+    best_county_id = county_id
+    try:
+        county, state = county_id.split(", ")
+        best_county_id = correct_missing_county_or_like(county, state)
 
-    if corrected_county_id is None:
+    except ValueError:
+        pass
+
+    if best_county_id is None and use_best_match:
         similar = find_similar_counties(county_id)
-        if not use_best_match or len(similar) < 1:
-            raise NoSimilarCountiesError(county_id)
-        corrected_county_id = similar[0]
-    return corrected_county_id
+        best_county_id = similar[0] if len(similar) > 0 else None
+
+    if best_county_id is None:
+        raise NoSimilarCountiesError(county_id)
+
+    return best_county_id
 
 
 def correct_missing_county_or_like(county: str, state: str) -> Union[str, None]:

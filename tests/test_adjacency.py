@@ -3,7 +3,6 @@ from pytest import raises
 from unittest.mock import patch
 
 from county_adjacency.adjacency import (
-    make_county_id,
     correct_missing_county_or_like,
     united_states_adjacency_data,
     supported_counties,
@@ -13,14 +12,6 @@ from county_adjacency.adjacency import (
     create_ranked_candidate_counties,
 )
 from county_adjacency.errors import CountyNotFoundError, NoSimilarCountiesError
-
-
-def test_make_county_id_no_state():
-    assert make_county_id("San Francisco County, CA", None) == "San Francisco County, CA"
-
-
-def test_make_county_id_with_state():
-    assert make_county_id("San Francisco County", "CA") == "San Francisco County, CA"
 
 
 def test_correct_missing_county():
@@ -120,9 +111,7 @@ def test_can_correct_county_name_errors_forgot_county():
     }
 
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
-        assert (
-            correct_county_name_errors("San Francisco", "CA", "San Francisco, CA", False) == "San Francisco County, CA"
-        )
+        assert correct_county_name_errors("San Francisco, CA", False) == "San Francisco County, CA"
 
 
 def test_can_correct_county_name_errors_best_match():
@@ -134,7 +123,7 @@ def test_can_correct_county_name_errors_best_match():
     }
 
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
-        assert correct_county_name_errors("Francisco", "CA", "Francisco, CA", True) == "San Francisco County, CA"
+        assert correct_county_name_errors("Francisco, CA", True) == "San Francisco County, CA"
 
 
 def test_can_correct_county_name_errors_fails_no_best_match():
@@ -146,7 +135,7 @@ def test_can_correct_county_name_errors_fails_no_best_match():
 
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
         with raises(NoSimilarCountiesError):
-            correct_county_name_errors("Ventura County", "CA", "Ventura County, CA", True)
+            correct_county_name_errors("Ventura County, CA", True)
 
 
 def test_can_correct_county_name_errors_fails_skip_best_match():
@@ -158,7 +147,7 @@ def test_can_correct_county_name_errors_fails_skip_best_match():
 
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
         with raises(NoSimilarCountiesError):
-            correct_county_name_errors("Ventura County", "CA", "Ventura County, CA", False)
+            correct_county_name_errors("Ventura County, CA", False)
 
 
 def test_get_neighboring_counties_fails_if_error_correction_not_specified():
@@ -170,7 +159,7 @@ def test_get_neighboring_counties_fails_if_error_correction_not_specified():
 
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
         with raises(CountyNotFoundError):
-            get_neighboring_counties("Ventura County", "CA")
+            get_neighboring_counties("Ventura County, CA")
 
 
 def test_get_neighboring_counties_fails_if_no_close_matches():
@@ -183,8 +172,7 @@ def test_get_neighboring_counties_fails_if_no_close_matches():
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
         with raises(CountyNotFoundError):
             get_neighboring_counties(
-                "Ventura County",
-                "CA",
+                "Ventura County, CA",
                 attempt_error_correction=True,
                 use_best_match=True,
             )
@@ -199,13 +187,13 @@ def test_get_neighboring_counties_fails_but_suggests_similar_matches():
 
     with patch.dict(united_states_adjacency_data, test_data, clear=True):
         with raises(CountyNotFoundError) as e:
-            get_neighboring_counties("San Francisco", "CA", attempt_error_correction=False)
+            get_neighboring_counties("San Francisco, CA", attempt_error_correction=False)
 
         assert e.value.similar == ("San Francisco County, CA",)
 
 
 def test_get_neighboring_counties():
-    neighbors = get_neighboring_counties("San Francisco County", "CA")
+    neighbors = get_neighboring_counties("San Francisco County, CA")
 
     assert neighbors == (
         "Contra Costa County, CA",
@@ -214,11 +202,21 @@ def test_get_neighboring_counties():
     )
 
 
-def test_get_neighboring_counties_as_tuple():
-    neighbors = get_neighboring_counties("San Francisco County", "CA", as_tuple=True)
+def test_get_neighboring_counties_forgot_county():
+    neighbors = get_neighboring_counties("San Francisco, CA", attempt_error_correction=True, use_best_match=True)
 
     assert neighbors == (
-        ("Contra Costa County", "CA"),
-        ("Marin County", "CA"),
-        ("San Mateo County", "CA"),
+        "Contra Costa County, CA",
+        "Marin County, CA",
+        "San Mateo County, CA",
+    )
+
+
+def test_get_neighboring_counties_best_match():
+    neighbors = get_neighboring_counties("Francisco, CA", attempt_error_correction=True, use_best_match=True)
+
+    assert neighbors == (
+        "Contra Costa County, CA",
+        "Marin County, CA",
+        "San Mateo County, CA",
     )
