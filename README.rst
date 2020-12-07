@@ -1,6 +1,6 @@
 # County Adjacency
 
-.. image:: https://travis-ci.org/chaddotson/county_adjacency.svg?branch=master
+.. image:: https://travis-ci.org/chaddotson/county_adjacency.svg?branch=main
     :target: https://travis-ci.org/chaddotson/county_adjacency
 
 .. code-block:: python
