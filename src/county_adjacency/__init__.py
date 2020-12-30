@@ -5,4 +5,4 @@ from county_adjacency.errors import CountyNotFoundError, NoSimilarCountiesError
 
 __all__ = ["CountyNotFoundError", "get_neighboring_areas", "NoSimilarCountiesError", "supported_areas"]
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"

@@ -8,7 +8,7 @@ County Adjacency
     :target: https://github.com/psf/black
 
 This package provides adjacency information for US counties (or their equivalent). This data is derived
-from the US Census `website`_.
+from the US Census `website`.
 
 .. _website: https://www.census.gov/geographies/reference-files/2010/geo/county-adjacency.html
 
