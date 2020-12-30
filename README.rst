@@ -16,9 +16,16 @@ Example
 -------
 .. code-block:: python
 
-    from county_adjacency import get_neighboring_counties, CountyNotFoundError
+    from county_adjacency import get_neighboring_areas, CountyNotFoundError, supported_areas
 
     try:
-        print(get_neighboring_counties("San Francisco County, CA"))
+        print(get_neighboring_areas("San Francisco County, CA"))
     except CountyNotFoundError as error:
         print(error)
+
+    ('Contra Costa County, CA', 'Marin County, CA', 'San Mateo County, CA')
+
+
+    supported_areas()
+
+    ('Autauga County, AL', 'Baldwin County, AL', ... , 'St. John Island, VI', 'St. Thomas Island, VI')

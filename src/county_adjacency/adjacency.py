@@ -21,18 +21,19 @@ __error_correction_county_formats = [
 ]
 
 
-def get_neighboring_counties(
+def get_neighboring_areas(
     county_or_like: str,
     attempt_error_correction: bool = True,
     use_best_match: bool = False,
-):
+) -> Tuple[str]:
     """
-    Get the adjacent counties given a specified county.
+    Get the adjacent counties (or equivalent) given a specified county (or equivalent).
 
-    :param county_or_like:
-    :param use_best_match:
-    :param attempt_error_correction:
-    :return:
+    :param county_or_like: The full name of the county, or county equivalent. ie 'San Francisco County, CA'"
+    :param attempt_error_correction: Should package attempt to resolve simple naming errors. Default: True
+    :param use_best_match: Indicates the package attempt to resolve more complicated naming errors. Default: False
+    :return: A tuple containing the full names of the neighboring counties.
+    :raises CountyNotFoundError: If the specified county was not found.
     """
     if county_or_like not in united_states_adjacency_data:
         if not attempt_error_correction:
@@ -123,7 +124,7 @@ def create_ranked_candidate_counties(county_id: str) -> List[Tuple[str, str]]:
     return sorted(candidates[0:10], key=itemgetter(1), reverse=True)
 
 
-def supported_counties() -> Tuple[str]:
+def supported_areas() -> Tuple[str]:
     """
     Return a tuple of supported counties.
 
