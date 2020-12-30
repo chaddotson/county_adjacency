@@ -1,7 +1,7 @@
 # County Adjacency
 
-.. image:: https://github.com/chaddotson/county_adjacency/workflows/testing/badge.svg
-    :target: https://github.com/chaddotson/county_adjacency/actions?query=workflow%3Atesting
+.. image:: https://github.com/chaddotson/county_adjacency/workflows/main/badge.svg
+    :target: https://github.com/chaddotson/county_adjacency/actions?query=workflow%3Amain
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
