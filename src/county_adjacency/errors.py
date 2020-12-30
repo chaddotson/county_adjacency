@@ -1,11 +1,11 @@
 """Defines possible errors encountered during county adjacency discovery."""
-from typing import List
+from typing import Tuple
 
 
 class CountyNotFoundError(RuntimeError):
     """Error when specified county, district, or like was not found."""
 
-    def __init__(self, county: str, similar: List[str] = None):
+    def __init__(self, county: str, similar: Tuple[str] = None):
         """
         Create the error given the county and the list of similar counties found.
 
