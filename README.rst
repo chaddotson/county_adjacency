@@ -1,8 +1,8 @@
 County Adjacency
 ================
 
-.. image:: https://github.com/chaddotson/county_adjacency/actions/workflows/tests.yml/badge.svg
-    :target: https://github.com/chaddotson/county_adjacency/actions?query=workflow%3Apytest
+.. image:: https://github.com/chaddotson/county_adjacency/actions/workflows/tests.yaml/badge.svg
+    :target: https://github.com/chaddotson/county_adjacency/actions/workflows/tests.yaml
 
 .. image:: https://img.shields.io/pypi/v/county-adjacency.svg
     :target: https://pypi.org/project/county-adjacency/
