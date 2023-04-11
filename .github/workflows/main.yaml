@@ -1,4 +1,4 @@
-name: flake8
+name: Complete Build
 
 on: [push]
 
